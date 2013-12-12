@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,10 +15,10 @@ namespace DownloadPodcasts
         static void Main(string[] args)
         {
             var pcastRgx = @"(?<pcastvidurl>http:\/\/[\w+\+d\-\/\.]*).(mp4|mp3|m4a)";
-            var pcastUrl = @"https://itunes.apple.com/podcast/tech-report-podcast-enhanced/id273853335?mt=2";  //@"https://itunes.apple.com/us/podcast/lifehacker-hd-mp4-30fps/id427598852";
+            var pcastUrl = @"https://itunes.apple.com/us/podcast/lifehacker-hd-mp4-30fps/id427598852"; //@"https://itunes.apple.com/podcast/tech-report-podcast-enhanced/id273853335?mt=2";  
             var vidHtml = new WebClient().DownloadString(pcastUrl);
             var vidUrls = GetVidUrls(vidHtml, pcastRgx);
-            var pcastDir = @"C:\Downloads\PodCasts\LifeHacker";
+            var pcastDir = @"C:\Downloads\PodCasts\LifeHacker\";
             int vidCnt = 1;
 
             if (!Directory.Exists(pcastDir))
@@ -37,6 +38,10 @@ namespace DownloadPodcasts
 
                     var fileName = Path.GetFileName(match.ToString());
                     Console.WriteLine("The file to be downloaded is {0}.\n It is file {1} of {2}.", fileName, vidCnt++, vidUrls.Count());
+                    var wc = new WebClient();
+                    
+                    
+                    wc.DownloadFile(match, pcastDir + fileName);
                     Console.Read();
 
                 });
@@ -73,14 +78,5 @@ namespace DownloadPodcasts
 
         }
 
-        public static string DwnldPcastVid(string pcastUrl, string dwnldDir)
-        {
-            var wc = new WebClient();
-            
-            wc.DownloadFile(pcastUrl, dwnldDir);
-            
-            return null;
-        }
-        
     }
 }
