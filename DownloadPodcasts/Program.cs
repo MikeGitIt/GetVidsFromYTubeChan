@@ -41,7 +41,7 @@ namespace DownloadPodcasts
                     var wc = new WebClient();
                     
                     
-                    wc.DownloadFile(match, pcastDir + fileName);
+                    wc.DownloadFileAsync(new Uri(match.ToString()), pcastDir + fileName);
                     Console.Read();
 
                 });
