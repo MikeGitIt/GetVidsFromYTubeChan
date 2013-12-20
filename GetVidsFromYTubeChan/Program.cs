@@ -13,12 +13,12 @@ namespace GetVidsFromYTubeChan
     {
         static void Main()
         {
-            const string vidUrl = @"https://www.youtube.com/user/CodeFurnace/videos"; //@"http://www.youtube.com/channel/UC_URNKseCV0eoi2Sfox8sNQ/videos";
+            const string vidUrl = @"http://www.youtube.com/user/TUTBYtv/search?query=node.js";//@"https://www.youtube.com/user/CodeFurnace/videos"; //@"http://www.youtube.com/channel/UC_URNKseCV0eoi2Sfox8sNQ/videos";
             //var wc = new WebClient();
             var vidUrlHtml = new WebClient().DownloadString(vidUrl);
             const string vidRegex = @"(?<yturl>watch\?v[A-Za-z0-9(=_\-)]*)";
             var vidsToDwnLd = GetVidUrls(vidUrlHtml, vidRegex);
-            const string dwnldDir = @"C:/Downloads/CodeFurnace";
+            const string dwnldDir = @"C:/Downloads/TUTBYtv";
 
             if (!Directory.Exists(dwnldDir))
             {
@@ -35,27 +35,24 @@ namespace GetVidsFromYTubeChan
                     var nmatch = "http://www.youtube.com/" + vtd;
 
                     IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(nmatch);
-                    VideoInfo video = videoInfos.First(info =>  info.VideoType == VideoType.Mp4 && info.Resolution == 720 || info.Resolution == 480 || info.Resolution == 360);
+                    VideoInfo video = videoInfos.First(info => info.VideoType == VideoType.Mp4 && info.Resolution == 720 || info.Resolution == 480 || info.Resolution == 360);
+                    var vidIWant = video.Title == "Writing RESTful web services using Node.js";
+                    Console.WriteLine(vidIWant);
+                    Console.Read();
+                   
+                    if (vidIWant == true){
+                        
+                        var videoDownloader = new VideoDownloader(video, Path.Combine(dwnldDir, video.Title + video.VideoExtension));
+                        videoDownloader.DownloadProgressChanged += (sender, args2) => Console.WriteLine(args2.ProgressPercentage);
+                         Console.WriteLine("The name of the dowloading video is \"{0}\" and the resolution is {1}.\n", video.Title, video.Resolution);
 
-                    var videoDownloader = new VideoDownloader(video, Path.Combine(dwnldDir, video.Title + video.VideoExtension));
-                    videoDownloader.DownloadProgressChanged += (sender, args2) => Console.WriteLine(args2.ProgressPercentage);
-                     Console.WriteLine(videoDownloader.ToString());
-                    if (!File.Exists(videoDownloader.ToString()))
-                    {
-                        if (video.Title == @"Introduction to jQuery and AJAX Web Forms")
-
-
-                        Console.WriteLine("The name of the dowloading video is \"{0}\" and the resolution is {1}.\n", video.Title, video.Resolution);
-                        videoDownloader.Execute();
+                            videoDownloader.Execute();
                     }
+                    
                     else
                     {
                         Console.WriteLine("File {0} already exists");
                     }
-                    Console.WriteLine(vtd);
-
-
-
                 });
 
             Console.Read();
